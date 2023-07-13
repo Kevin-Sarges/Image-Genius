@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:image_genius/app/features/home/domain/datasource/ihome_datasource.dart';
 import 'package:image_genius/app/features/home/domain/http_client/ihome_http_client.dart';
+import 'package:image_genius/app/features/home/domain/repository/ihome_repository.dart';
 import 'package:image_genius/app/features/home/domain/usecase/gerando_imagem.dart';
 import 'package:image_genius/app/features/home/external/http_client/home_http_client.dart';
 import 'package:image_genius/app/features/home/infra/datasource/home_datesource.dart';
@@ -19,7 +20,7 @@ class InjectDependency {
       () => HomeDataSoucer(homeHttpClient: getIt()),
     );
 
-    getIt.registerFactory<HomeRepository>(
+    getIt.registerFactory<HomeRepositoryImpl>(
       () => HomeRepository(dataSourceImpl: getIt()),
     );
 

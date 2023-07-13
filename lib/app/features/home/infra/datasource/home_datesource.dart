@@ -47,7 +47,7 @@ class HomeDataSoucer implements HomeDataSourceImpl {
 
         return list;
       } else {
-        throw CommonDesconhecidoError(message: response.statusCode);
+        throw CommonDesconhecidoError(message: response.statusCode.toString());
       }
     } on HttpException catch (e) {
       throw CommonDesconhecidoError(message: e.message);
