@@ -24,7 +24,10 @@ class DicasWidget extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Divider(),
+          Divider(
+            height: 2,
+            color: AppColors.white,
+          ),
           Expanded(
             child: ListView(
               children: _listText

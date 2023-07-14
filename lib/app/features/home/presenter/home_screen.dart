@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 2,
                 color: AppColors.white,
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
               Expanded(
                 child: BlocConsumer<HomeCubit, HomeState>(
                   bloc: _cubit,
@@ -114,12 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               );
                             },
-                            child: SizedBox(
+                            child: Container(
                               width: 180,
                               height: 180,
-                              child: Image.network(
-                                state.list[index].url,
-                                fit: BoxFit.cover,
+                              decoration: BoxDecoration(
+                                color: AppColors.grey,
+                                image: DecorationImage(
+                                  image: NetworkImage(state.list[index].url),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           );

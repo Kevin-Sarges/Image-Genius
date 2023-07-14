@@ -17,7 +17,7 @@ class HomeDataSoucer implements HomeDataSourceImpl {
     try {
       String apiKey = FlutterConfig.get('API_KEY');
       const n = 5;
-      const size = '512x512';
+      const size = '256x256';
 
       final headers = {
         'Authorization': 'Bearer $apiKey',
