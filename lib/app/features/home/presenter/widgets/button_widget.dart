@@ -16,7 +16,7 @@ class ButtonWidget extends StatelessWidget {
       color: AppColors.blueSecondary,
       child: InkWell(
         onTap: onTap,
-        splashColor: AppColors.white,
+        splashColor: AppColors.grey,
         child: SizedBox(
           width: 80,
           height: 60,
