@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:image_genius/app/common/color/app_colors.dart';
 import 'package:image_genius/app/common/entity/entity_api.dart';
+import 'package:image_genius/app/features/image/widgets/messenger_snakbar.dart';
 import 'package:image_genius/app/features/image/widgets/nome_imagem_widget.dart';
 import 'package:image_genius/app/features/image/widgets/novo_nome_imagem_widget.dart';
 
@@ -17,6 +21,7 @@ class ImageScreen extends StatefulWidget {
 class _ImageScreenState extends State<ImageScreen> {
   String _nomeImagem = 'Nome da Imagem';
   bool _clickUpdate = false;
+  bool _carregando = false;
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -35,12 +40,42 @@ class _ImageScreenState extends State<ImageScreen> {
   }
 
   void _saveNetworkImage() async {
-    String path = widget.image.url;
-    GallerySaver.saveImage(path, albumName: 'Média').then((bool? success) {
-      setState(() {
-        print('Image is saved......................');
+    final imageUrl = widget.image.url;
+    final response = await http.get(Uri.parse(imageUrl));
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      final directory = (await getApplicationDocumentsDirectory()).path;
+      final filePath = '$directory/$_nomeImagem.png';
+      await File(filePath).writeAsBytes(bytes);
+
+      GallerySaver.saveImage(filePath, albumName: 'Image Genius')
+          .then((bool? success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColors.white,
+            duration: const Duration(seconds: 2),
+            content: const MessengerSnackBarWidget(
+              messenger: 'Sua imagem foi salva com sucesso !!',
+            ),
+          ),
+        );
+
+        setState(() {
+          _carregando = false;
+        });
       });
-    });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.white,
+          duration: const Duration(seconds: 2),
+          content: const MessengerSnackBarWidget(
+            messenger: 'Erro ao salvar imagem !!',
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -64,7 +99,7 @@ class _ImageScreenState extends State<ImageScreen> {
                       widget.image.url,
                       width: width,
                     ),
-                    const SizedBox(height: 80),
+                    const SizedBox(height: 20),
                     _clickUpdate
                         ? NovoNomeImagemWidget(
                             controller: _textEditingController,
@@ -85,20 +120,52 @@ class _ImageScreenState extends State<ImageScreen> {
                               _editNome();
                             },
                           ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: _saveNetworkImage,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Baixar'),
-                          Icon(
-                            Icons.download,
-                            color: AppColors.white,
+                    const SizedBox(height: 60),
+                    Material(
+                      borderRadius: BorderRadius.circular(20),
+                      color: _carregando
+                          ? AppColors.grey
+                          : AppColors.blueSecondary,
+                      child: InkWell(
+                        onTap: _carregando
+                            ? null
+                            : () {
+                                _saveNetworkImage();
+                                setState(() {
+                                  _carregando = true;
+                                });
+                              },
+                        splashColor: AppColors.grey,
+                        child: AnimatedContainer(
+                          width: _carregando ? 100 : width * 0.5,
+                          height: 50,
+                          duration: const Duration(milliseconds: 600),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: _carregando
+                                ? [
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.white,
+                                      ),
+                                    )
+                                  ]
+                                : [
+                                    Text(
+                                      'Baixar',
+                                      style: TextStyle(color: AppColors.white),
+                                    ),
+                                    Icon(
+                                      Icons.download,
+                                      color: AppColors.white,
+                                    ),
+                                  ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
