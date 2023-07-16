@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_genius/app/features/home/domain/inject/inject_dependency.dart';
 import 'package:image_genius/app/my_app.dart';
 
@@ -10,7 +10,7 @@ void main() async {
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp,
   ]);
-  await FlutterConfig.loadEnvVariables();
+  await dotenv.load(fileName: '.env');
 
   InjectDependency.init();
   runApp(const MyApp());

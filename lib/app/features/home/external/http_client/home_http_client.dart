@@ -7,8 +7,8 @@ class HomeHttpClient implements HomeHttpClientImpl {
   @override
   Future<http.Response> post(
     String url,
-    Map<String, String> headers,
-    String body,
+    Map<String, String>? headers,
+    String? body,
   ) async {
     final response = await client.post(
       Uri.parse(url),

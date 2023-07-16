@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_genius/app/common/entity/entity_api.dart';
 import 'package:image_genius/app/common/err/common_errors.dart';
 import 'package:image_genius/app/common/model/model_api.dart';
@@ -15,7 +15,8 @@ class HomeDataSoucer implements HomeDataSourceImpl {
   @override
   Future<List<EntityApi>> gerandoImagem(String prompt) async {
     try {
-      String apiKey = FlutterConfig.get('API_KEY');
+      String apiKey = dotenv.get('DALLE_APIKEY');
+      String url = dotenv.get('BASE_URL_API');
       const n = 5;
       const size = '512x512';
 
@@ -30,12 +31,14 @@ class HomeDataSoucer implements HomeDataSourceImpl {
       });
 
       final response = await homeHttpClient.post(
-        FlutterConfig.get('API_URL'),
+        url,
         headers,
         body,
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode != 200) {
+        throw CommonDesconhecidoError(message: response.statusCode.toString());
+      } else {
         final List<ModelApi> list = [];
 
         final jsonData = jsonDecode(response.body);
@@ -46,8 +49,6 @@ class HomeDataSoucer implements HomeDataSourceImpl {
         }
 
         return list;
-      } else {
-        throw CommonDesconhecidoError(message: response.statusCode.toString());
       }
     } on HttpException catch (e) {
       throw CommonDesconhecidoError(message: e.message);

@@ -74,21 +74,24 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: BlocConsumer<HomeCubit, HomeState>(
+                child: BlocBuilder<HomeCubit, HomeState>(
                   bloc: _cubit,
-                  listener: (context, state) {
-                    if (state is HomeErro) {
-                      Center(
-                        child: Text(state.erro.errorMessage),
-                      );
-                      return;
-                    }
-                  },
                   builder: (context, state) {
                     if (state is HomeCarregando) {
                       return Center(
                         child: CircularProgressIndicator(
                           color: AppColors.white,
+                        ),
+                      );
+                    }
+
+                    if (state is HomeErro) {
+                      return Center(
+                        child: Text(
+                          state.erro.errorMessage,
+                          style: TextStyle(
+                            color: AppColors.white,
+                          ),
                         ),
                       );
                     }
