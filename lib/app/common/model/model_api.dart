@@ -7,7 +7,7 @@ class ModelApi extends EntityApi {
     return ModelApi(url: json['url']);
   }
 
-  static List<EntityApi> fronJsonList(List list) {
+  static List<EntityApi>? fronJsonList(List list) {
     return list.map((map) => ModelApi.fromJson(map)).toList();
   }
 }
