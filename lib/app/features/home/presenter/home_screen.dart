@@ -8,6 +8,7 @@ import 'package:image_genius/app/features/home/presenter/widgets/button_widget.d
 import 'package:image_genius/app/features/home/presenter/widgets/dicas_widget.dart';
 import 'package:image_genius/app/features/home/presenter/widgets/initial_list_image_widget.dart';
 import 'package:image_genius/app/features/home/presenter/widgets/input_widget.dart';
+import 'package:image_genius/app/features/home/presenter/widgets/skeleton_loading_widget.dart';
 import 'package:image_genius/app/features/image/image_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -78,11 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   bloc: _cubit,
                   builder: (context, state) {
                     if (state is HomeCarregando) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.white,
-                        ),
-                      );
+                      return const SkeletonLoading();
                     }
 
                     if (state is HomeErro) {
